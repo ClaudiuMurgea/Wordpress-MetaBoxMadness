@@ -1,0 +1,136 @@
+/*
+    Theme Name: Doyenne
+    Author: SplashCreative
+    Version: 1.0
+*/
+/*
+    Theme Name: Fictional University
+    Author: Clau
+    Version: 1.0
+*/
+
+.just {
+  transform: translateY(10rem) translateX(-5rem); 
+}
+
+  
+@font-face {
+    font-family: "Montecatini";
+    src: url("fonts/MontecatiniPro-NormaleLight.ttf");
+}
+
+@font-face {
+    font-family: "Affable";
+    src:url("fonts/Affable\ W01\ Lite.ttf");
+}
+
+@font-face {
+    font-family: "Garamond";
+    src: url("fonts/Garamond\ Regular.ttf");
+}
+
+@font-face {
+    font-family: "Arno";
+    src: url("fonts/ArnoPro-Subhead.otf");
+}
+
+* {
+   box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+/* Custom fonts */
+.montecatini {
+    font-family: "Montecatini";
+}
+
+.affable {
+    font-family: "Affable";
+}
+
+.garamond {
+    font-family: "Garamond";
+}
+
+.arno {
+    font-family: "Arno";
+}
+
+/* Text Color - doyenne pink */
+.custom__color {
+    color: #e3338f;
+}
+
+/* Background - doyenne pink */
+.custom__color2 {
+    background-color: #e3338f;
+}
+
+/* Background - doyenne pink - lighter 20% */
+.custom__color3 {
+    background-color: #e85ba5;
+}
+
+/* Background - doyenne pink - darker 20%  */
+.custom__color4 {
+    background-color: #cb1b77;
+}
+
+/* Background - doyenne pink - light orange */
+.custom__color5 {
+    background-color: #f3ebe6;
+}
+
+/* Custom font-size for mobile */
+.xs3 {
+    font-size: 0.23rem;
+}
+
+.xs31 {
+    font-size: 0.4rem;
+}
+
+.xs2 {
+    font-size: 0.55rem;
+}
+
+.doye {
+    font-size: 5vh;
+}
+
+/* Custom Border */
+
+.custom__border {
+    border: 1px solid #e3338f;
+}
+
+/* SURGE ARROW GEOMETRIC FIGURE */
+#pointer {
+    width: 100px;
+    height: 80px;
+    position: relative;
+    background: #a21caf;
+}
+#pointer:after {
+
+}
+#pointer:before {
+    content: "";
+    position: absolute;
+    right: -40px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 40px dashed #a21caf;
+    border-top: 40px solid transparent;
+    border-bottom: 40px solid transparent;
+}
+
+ 
