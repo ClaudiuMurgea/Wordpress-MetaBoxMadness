@@ -13,7 +13,7 @@ get_header();
 			<!-- First Hero Section -->
 			<div class="w-full pt-8 px-4
 				md:px-12
-				lg:px-16" 
+				lg:px-16"
 				 style="background-color:<?php echo rwmb_meta( 'first_hero_background_color' );?>"
 				>
 				<div class="flex">
@@ -24,7 +24,7 @@ get_header();
 						THE
 					</div>
 					<h1 class="montecatini text-4xl text-slate-700
-						md:text-6xl 
+						md:text-6xl
 						lg:text-8xl
 						">
 						DOYENNE
@@ -66,11 +66,11 @@ get_header();
 						">
 						<?php rwmb_the_value( 'first_hero_desc' ); ?>
 					</h4>
-					
+
 					<div class="my-6 lg:my-12">
 						<?php if(rwmb_meta('first_section_button_text') != null) { ?>
 							<a 	href="
-									<?php rwmb_the_value( 'first_hero_button_link' );?>" 
+									<?php rwmb_the_value( 'first_hero_button_link' );?>"
 								class="arno text-white rounded-md text-xl px-4 pt-3 pb-1.5
 								sm:text-2xl sm:px-6 sm:pt-4 sm:pb-2
 								md:text-3xl md:px-6 md:pt-4 md:pb-2
@@ -98,7 +98,7 @@ get_header();
 									sm:text-base sm:pt-6 sm:px-7
 									md:text-lg md:pt-8 md:px-9
 									lg:text-xl lg:pt-12 lg:px-12
-									xl:text-2xl xl:pt-12 xl:px-14 
+									xl:text-2xl xl:pt-12 xl:px-14
 									2xl:text-4xl 2xl:pt-20 2xl:pb-3 2xl:px-10
 									">
 									<?php rwmb_the_value( 'second_hero_first_title' ); ?>
@@ -120,11 +120,11 @@ get_header();
 							 style="background-color:<?php echo rwmb_meta( 'second_hero_color' );?>
 							">
 							<div class="text-white text-center text-base">
-								<h1 class="text-sm pt-4 px-4 font-bold 
+								<h1 class="text-sm pt-4 px-4 font-bold
 								sm:text-base sm:pt-6 sm:px-7
 								md:text-lg md:pt-8 md:px-9
 								lg:text-xl lg:pt-12 lg:px-14
-								xl:text-2xl xl:pt-12 xl:px-14 
+								xl:text-2xl xl:pt-12 xl:px-14
 								2xl:text-4xl 2xl:pt-20 2xl:pb-3
 									">
 									<?php rwmb_the_value( 'second_hero_second_title' ); ?>
@@ -177,12 +177,78 @@ get_header();
 				xl:pl-60
 				2xl:pl-60 2xl:ml-8 2xl:pt-72 2xl:mt-4"> -->
 
+<?php foreach(rwmb_meta('customdata_group') as $item) { ?>
+
+			<section class="flex w-full pt-36 pl-14
+				sm:pl-18
+				md:pl-24 md:pt-56
+				lg:pl-44
+				xl:pl-60 xl:pt-64
+				2xl:pl-60 2xl:pt-72 2xl:mt-4
+				">
+				<div class="w-2/5 py-2 md:pr-10
+					sm:pl-4
+					md:py-4 md:pl-2
+					lg:py-6 lg:pl-2
+					xl:py-8
+					2xl:py-14 2xl:pl-8
+					">
+					<h2 class="tracking-widest text-xl
+						md:text-2xl
+						xl:text-3xl
+						">
+						<?php echo $item['TitleItem']; ?>
+					</h2>
+					<h1 class="custom__color text-2xl pb-3
+						md:text-3xl md:pb-4
+						xl:text-4xl
+						2xl:text-5xl"
+						style="color:<?php echo rwmb_meta( 'first_section_color' );?>
+						">
+						<?php echo $item['SubtitleItem']; ?>
+					</h1>
+					<h4 class="text-xs pr-2
+						sm:text-xs
+						md:text-sm
+						lg:pr-12 lg:text-base
+						xl:pr-12 xl:text-lg
+						2xl:pr-16 2xl:text-xl
+						">
+						<?php echo $item['TitleDescription']; ?></h4>
+				</div>
+
+				<div class="w-3/5 bg-gray-100 border border-gray-300
+					sm:ml-0
+					lg:py-28
+					">
+				</div>
+			</section>
+<?php } ?>
+
+
 			<div class="pt-36
 			md:pt-56
 			2xl:pt-72">
 				<?php the_content(); ?>
 			</div>
-			
+
+			<?php
+				$id = get_the_ID();
+				$banner_img = get_post_meta($id, 'post_banner_img', true);
+				$banner_img = explode(',', $banner_img);
+				if(!empty($banner_img)) {
+			?>
+				<h1 class="pt-6">The Single Upload Image from meta box!</h1>
+				<table class="plugin-detail-tabl" width="100%" cellspacing="0" cellpadding="0">
+					<tbody>
+						<?php  foreach ($banner_img as $attachment_id) { ?>
+							<tr>
+								<td><img src="<?php echo wp_get_attachment_url( $attachment_id );?>"></td>
+							</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+			<?php } ?>
 
 			<section class="flex w-full pt-36 pl-14
 				sm:pl-18
@@ -232,7 +298,7 @@ get_header();
 			<div class="my-12 md:mt-20 md:mb-16 2xl:mt-32 2xl:mb-28 flex justify-center">
 				<?php if(rwmb_meta('first_section_button_text') != null) { ?>
 					<a 	href="
-							<?php rwmb_the_value( 'first_section_button_link' ); ?>" 
+							<?php rwmb_the_value( 'first_section_button_link' ); ?>"
 						class="arno custom__color2 text-white rounded-md text-xl px-4 pt-3 pb-1.5
 							sm:text-2xl sm:px-6 sm:pt-4 sm:pb-2
 							md:text-3xl md:px-6 md:pt-4 md:pb-2
@@ -288,7 +354,7 @@ get_header();
 			<div class="mt-28 md:mt-32 xl:mt-40 flex justify-center">
 				<?php if(rwmb_meta('second_section_button_text') != null) { ?>
 					<a 	href="
-							<?php rwmb_the_value( 'second_section_button_link' ); ?>" 
+							<?php rwmb_the_value( 'second_section_button_link' ); ?>"
 						class="arno custom__color2 text-white rounded-md text-xl px-4 pt-3 pb-1.5
 							sm:text-2xl sm:px-6 sm:pt-4 sm:pb-2
 							md:text-3xl md:px-6 md:pt-4 md:pb-2
@@ -314,10 +380,10 @@ get_header();
       		</p>
 
 			<div class="grid grid-cols-3 mx-14 place-items-center pt-8 pb-2 gap-x-16 sm:gap-x-24 md:gap-x-0
-				sm:pt-9 
-				md:pt-10 
-				lg:pt-16 
-				2xl:pt-20 
+				sm:pt-9
+				md:pt-10
+				lg:pt-16
+				2xl:pt-20
 				">
 				<div class="w-full bg-no-repeat py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 2xl:py-32" style="background-image: url(<?php echo get_theme_file_uri('/svg/svg1.svg'); ?>);background-size:100% 100%"></div>
 				<div class="w-full bg-no-repeat py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 2xl:py-32" style="background-image: url(<?php echo get_theme_file_uri('/svg/svg2.svg'); ?>);background-size:100% 100%"></div>
@@ -370,7 +436,7 @@ get_header();
 			<div class="mt-20 flex justify-center">
 				<?php if(rwmb_meta('fourth_section_button_text') != null) { ?>
 					<a 	href="
-							<?php rwmb_the_value( 'fourth_section_button_link' ); ?>" 
+							<?php rwmb_the_value( 'fourth_section_button_link' ); ?>"
 						class="arno custom__color2 text-white rounded-md text-xl px-4 pt-3 pb-1.5
 							sm:text-2xl sm:px-6 sm:pt-4 sm:pb-2
 							md:text-3xl md:px-6 md:pt-4 md:pb-2
@@ -490,7 +556,7 @@ get_header();
 						">
 
 					<?php  	$sixth_section_items = rwmb_meta('sixth_section_items');
-							foreach( $sixth_section_items as $item) { 
+							foreach( $sixth_section_items as $item) {
 					?>
 
 					<div class="flex space-x-10">
@@ -542,9 +608,9 @@ get_header();
 					2xl:text-xl
 					">
 
-					<?php 
+					<?php
 						$seventh_section_items = rwmb_meta('seventh_section_items');
-						foreach($seventh_section_items as $item) { 
+						foreach($seventh_section_items as $item) {
 					?>
 
 					<div class="flex flex-row space-x-5 pl-12">
@@ -568,7 +634,7 @@ get_header();
 					sm:ml-12 sm:pt-24 sm:ml-16
 					md:ml-16 md:pt-32 md:ml-20
 					lg:ml-20 lg:translate-y-28 lg:ml-24
-					lg:py-2 
+					lg:py-2
 					xl:ml-28 xl:translate-y-24
 					2xl:ml-36
 					">
@@ -591,7 +657,7 @@ get_header();
 				<div class="italic text-white text-xs pt-2 pb-6 pr-4 w-2/4
 					sm:text-sm sm:py-4 sm:pr-16 sm:text-sm sm:pb-8
 					md:text-base md:py-12 md:text-base
-					lg:text-lg 
+					lg:text-lg
 					xl:text-xl xl:pr-56
 					2xl:text-xl translate-y-2
 					">
@@ -704,9 +770,9 @@ get_header();
 
 			<!-- Tenth Section -->
 			<div class="garamond flex flex-col justify-center pt-6 sm:pt-8 md:pt-10 lg:py-0 lg:-translate-y-72">
-			
+
 				<?php  	$tenth_section_items = rwmb_meta('tenth_section_items');
-						foreach( $tenth_section_items as $item) { 
+						foreach( $tenth_section_items as $item) {
 				?>
 						<div class="w-3/6 m-auto pt-1 pb-4 font-light text-base w-full
 							sm:text-lg
@@ -910,7 +976,7 @@ get_header();
 					<?php rwmb_the_value('thirteenth_section_desc') ?>
 				</h4>
 			</article>
-		
+
 			<div class="flex justify-center">
 				<div class="text-base tracking-wide pt-5
 				sm:text-lg sm:pt-7
@@ -935,7 +1001,7 @@ get_header();
 			<div class="mt-2 mb-12 md:mb-20 md:mb-16 lg:mb-28 lg:mt-4 2xl:mt-6 2xl:mb-28 flex justify-center">
 				<?php if(rwmb_meta('fourteenth_section_button_text') != null) { ?>
 					<a 	href="
-							<?php rwmb_the_value( 'fourteenth_section_button_link' ); ?>" 
+							<?php rwmb_the_value( 'fourteenth_section_button_link' ); ?>"
 						class="arno custom__color2 text-white rounded-md text-xl px-4 pt-3 pb-1.5
 							sm:text-2xl sm:px-6 sm:pt-4 sm:pb-2
 							md:text-3xl md:px-6 md:pt-4 md:pb-2
@@ -949,7 +1015,7 @@ get_header();
 				<?php } ?>
 			</div>
 
-			<div class="w-full 
+			<div class="w-full
 				lg:mt-16
 				xl:mt-20"
 				style="background-color:<?php echo rwmb_meta( 'contact_form_color' );?>"
@@ -993,7 +1059,7 @@ get_header();
 			</div>
 
 		<!-- THE CONTACT FORM -->
-		
+
 
 			<!-- CTA -->
 			<section id="cta" class="wrapper style4">

@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-/* 
+/*
     ===========================================================
     Adding styles
     ===========================================================
@@ -20,12 +20,12 @@
 
     add_action('after_setup_theme', 'doyenne_features');
 
-/* 
+/*
     ===========================================================
     Adding menu to appearence
     ===========================================================
 */
-    
+
     function menus() {
 
         $locations = array(
@@ -38,29 +38,29 @@
 
     add_action('init', 'menus');
 
-/* 
+/*
 ===========================================================
     Adding menu to thumbnails to posts
 ===========================================================
 */
-    add_theme_support( 'post-thumbnails' ); 
+    add_theme_support( 'post-thumbnails' );
 
 
-/* 
+/*
 ===========================================================
     Adding widgets to appearence
 ===========================================================
-*/   
+*/
     register_sidebar(array(
         'name'          => __( 'Intro Widget', 'theme_text_domain' ),
         'id'            => 'intro-widget',
         'before_widget' => '<div class=intro-widget">',
         'after_widget'  => '</div>',
         ));
-        
-    
+
+
     function intro_widget() {
-        if ( is_post_type_archive() && is_active_sidebar( 'intro-widget' ) ) { 
+        if ( is_post_type_archive() && is_active_sidebar( 'intro-widget' ) ) {
             dynamic_sidebar('intro-widget', array(
             'before' => '<div class="intro-widget">',
             'after' => '</div>',
@@ -70,11 +70,11 @@
     add_action( 'loop_start', 'intro_widget' );
 
 
-/* 
+/*
 ===========================================================
     Adding widgets to appearence
 ===========================================================
-*/ 
+*/
 
     function create_posttype() {
         register_post_type( 'wpll_product',
@@ -91,11 +91,11 @@
         }
     add_action( 'init', 'create_posttype' );
 
-/* 
+/*
 ===========================================================
     Adding CTP to sidebar
 ===========================================================
-*/ 
+*/
 
 // function awesome_custom_post_type (){
 //     $labelss = array(
@@ -111,7 +111,7 @@
 //         'not_found' => 'No items found',
 //         'not_found_in_trash' => 'No items found in trash',
 //         'parent_item_colon' => 'Parent Item'
-//     ); 
+//     );
 //     $args = array(
 //         'labels' => $labels,
 //         'public' => true,
@@ -137,11 +137,11 @@
 // add_action('init', 'awesome_custom_post_type');
 
 
-/* 
+/*
 ===========================================================
     Adding sidebar
 ===========================================================
-*/ 
+*/
 
 add_action( 'widgets_init', 'my_awesome_sidebar' );
 function my_awesome_sidebar() {
@@ -153,18 +153,468 @@ function my_awesome_sidebar() {
     'before_widget' => '<div id="%1$s" class="widget %2$s">',
     'after_widget'  => '</div>',
     'before_title'  => '<h2 class="widgettitle">',
-    'after_title'   => '</h2>' 
+    'after_title'   => '</h2>'
   );
 
   register_sidebar( $args );
 
 }
 
-/* 
+/*
+===========================================================
+    Adding repeatable meta boxes
+===========================================================
+*/
+
+add_action('admin_init', 'gpm_add_meta_boxes', 2);
+
+function gpm_add_meta_boxes() {
+    add_meta_box( 'gpminvoice-group', 'Content vs Color-Repeatable', 'Repeatable_meta_box_display', 'page', 'normal', 'high');
+    add_meta_box( 'gpminvoice-group2', 'Content vs Image-Repeatable', 'Repeatable_meta_box_image', 'page', 'normal', 'high');
+}
+
+
+/*
+===========================================================
+    Repeatable_meta_box_display()
+===========================================================
+*/
+function Repeatable_meta_box_display() {
+    global $post;
+    $gpminvoice_group = get_post_meta($post->ID, 'customdata_group', true);
+     wp_nonce_field( 'gpm_repeatable_meta_box_nonce', 'gpm_repeatable_meta_box_nonce' );
+    ?>
+    <script type="text/javascript">
+    jQuery(document).ready(function( $ ){
+        $( '#add-row' ).on('click', function() {
+            var row = $( '.empty-row.screen-reader-text' ).clone(true);
+            row.removeClass( 'empty-row screen-reader-text' );
+            row.insertBefore( '#repeatable-fieldset-one tbody>tr:last' );
+            return false;
+        });
+
+        $( '.remove-row' ).on('click', function() {
+            $(this).parents('tr').remove();
+            return false;
+        });
+    });
+  </script>
+  <table id="repeatable-fieldset-one" width="100%">
+  <tbody>
+    <?php
+     if ( $gpminvoice_group ) :
+      foreach ( $gpminvoice_group as $field ) {
+    ?>
+    <tr>
+      <td width="15%">
+        <input type="text"  placeholder="Title" name="TitleItem[]" value="<?php if($field['TitleItem'] != '') echo esc_attr( $field['TitleItem'] ); ?>" /></td>
+      <td width="15%">
+        <input type="text"  placeholder="Subtitle" name="SubtitleItem[]" value="<?php if($field['SubtitleItem'] != '') echo esc_attr( $field['SubtitleItem'] ); ?>" /></td>
+      <td width="35%">
+      <textarea placeholder="Description" cols="55" rows="5" name="TitleDescription[]"> <?php if ($field['TitleDescription'] != '') echo esc_attr( $field['TitleDescription'] ); ?> </textarea></td>
+      <td width="15%"><a class="button remove-row" href="#1">Remove</a></td>
+    </tr>
+    <?php
+    }
+    else :
+    // show a blank one
+    ?>
+    <tr>
+      <td>
+        <input type="text" placeholder="Title" title="Title" name="TitleItem[]" />
+      </td>
+      <td>
+        <input type="text" placeholder="Subtitle" title="Subtitle" name="SubtitleItem[]" />
+      </td>
+      <td>
+          <textarea  placeholder="Description" name="TitleDescription[]" cols="55" rows="5"></textarea>
+      </td>
+      <td><a class="button  cmb-remove-row-button button-disabled" href="#">Remove</a></td>
+    </tr>
+    <?php endif; ?>
+
+    <!-- empty hidden one for jQuery -->
+    <tr class="empty-row screen-reader-text">
+      <td>
+        <input type="text" placeholder="Title" name="TitleItem[]"/>
+      </td>
+      <td>
+        <input type="text" placeholder="Subtitle" name="SubtitleItem[]"/>
+      </td>
+      <td>
+          <textarea placeholder="Description" cols="55" rows="5" name="TitleDescription[]"></textarea>
+      </td>
+      <td><a class="button remove-row" href="#">Remove</a></td>
+    </tr>
+  </tbody>
+</table>
+<p><a id="add-row" class="button" href="#">Add another</a></p>
+ <?php
+}
+add_action('save_post', 'custom_repeatable_meta_box_display_save');
+function custom_repeatable_meta_box_display_save($post_id) {
+    if ( ! isset( $_POST['gpm_repeatable_meta_box_nonce'] ) ||
+    ! wp_verify_nonce( $_POST['gpm_repeatable_meta_box_nonce'], 'gpm_repeatable_meta_box_nonce' ) )
+        return;
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        return;
+
+    if (!current_user_can('edit_post', $post_id))
+        return;
+
+    $old = get_post_meta($post_id, 'customdata_group', true);
+    $new = array();
+    $invoiceItems = $_POST['TitleItem'];
+    $invoiceSubitems = $_POST['SubtitleItem'];
+    $prices = $_POST['TitleDescription'];
+
+    $count = count( $invoiceItems );
+
+     for ( $i = 0; $i < $count; $i++ ) {
+        if ( $invoiceItems[$i] != '' ) :
+            $new[$i]['TitleItem'] = stripslashes( strip_tags( $invoiceItems[$i] ) ); // and however you want to sanitize
+              $new[$i]['SubtitleItem'] = stripslashes( $invoiceSubitems[$i] );
+                $new[$i]['TitleDescription'] = stripslashes( $prices[$i] );
+        endif;
+    }
+    if ( !empty( $new ) && $new != $old )
+        update_post_meta( $post_id, 'customdata_group', $new );
+    elseif ( empty($new) && $old )
+        delete_post_meta( $post_id, 'customdata_group', $old );
+}
+
+/*
+===========================================================
+    Repeatable_meta_box_image()
+===========================================================
+*/
+
+function Repeatable_meta_box_image() {
+    global $post;
+    $gpminvoice_group2 = get_post_meta($post->ID, 'customdata_group2', true);
+     wp_nonce_field( 'gpm_repeatable_meta_box_nonce', 'gpm_repeatable_meta_box_nonce' );
+    ?>
+    <script type="text/javascript">
+    jQuery(document).ready(function( $ ){
+        $( '#add-row2' ).on('click', function() {
+            var row = $( '.empty-row2.screen-reader-text2' ).clone(true);
+            row.removeClass( 'empty-row2 screen-reader-text2' );
+            row.insertBefore( '#repeatable-fieldset-two tbody>tr:last' );
+            return false;
+        });
+
+        $( '.remove-row2' ).on('click', function() {
+            $(this).parents('tr').remove();
+            return false;
+        });
+    });
+  </script>
+  <table id="repeatable-fieldset-two" width="100%">
+  <tbody>
+    <?php
+     if ( $gpminvoice_group2 ) :
+      foreach ( $gpminvoice_group2 as $field ) {
+    ?>
+    <tr>
+      <td width="15%">
+        <input type="text"  placeholder="Title" name="TitleItem2[]" value="<?php if($field['TitleItem2'] != '') echo esc_attr( $field['TitleItem2'] ); ?>" /></td>
+      <td width="15%">
+        <input type="text"  placeholder="Subtitle" name="SubtitleItem2[]" value="<?php if($field['SubtitleItem2'] != '') echo esc_attr( $field['SubtitleItem2'] ); ?>" /></td>
+      <td width="20%">
+      <textarea placeholder="Description" cols="55" rows="5" name="TitleDescription2[]"> <?php if ($field['TitleDescription2'] != '') echo esc_attr( $field['TitleDescription2'] ); ?> </textarea></td>
+      <td width="15%">
+        <input type="file" name="ChooseFile[]"/></td>
+      <td width="15%"><a class="button remove-row2" href="#1">Remove</a></td>
+    </tr>
+    <?php
+    }
+    else :
+    // show a blank one
+    ?>
+    <tr>
+      <td>
+        <input type="text" placeholder="Title" title="Title" name="TitleItem2[]" />
+      </td>
+      <td>
+        <input type="text" placeholder="Subtitle" title="Subtitle" name="SubtitleItem2[]" />
+      </td>
+      <td>
+          <textarea  placeholder="Description" name="TitleDescription2[]" cols="55" rows="5"></textarea>
+      </td>
+      <td>
+        <input type="file" name="ChooseFile[]"/>
+      </td>
+      <td><a class="button cmb-remove-row-button" href="#">Remove</a></td>
+    </tr>
+    <?php endif; ?>
+
+    <!-- empty hidden one for jQuery -->
+    <tr class="empty-row2 screen-reader-text2">
+      <td>
+        <input type="text" placeholder="Title" name="TitleItem2[]"/>
+      </td>
+      <td>
+        <input type="text" placeholder="Subtitle" name="SubtitleItem2[]"/>
+      </td>
+      <td>
+          <textarea placeholder="Description" cols="55" rows="5" name="TitleDescription2[]"></textarea>
+      </td>
+      <td>
+        <input type="file" name="ChooseFile[]"/>
+      </td>
+      <td><a class="button remove-row2" href="#">Remove</a></td>
+    </tr>
+  </tbody>
+</table>
+<p><a id="add-row2" class="button" href="#">Add another</a></p>
+ <?php
+}
+add_action('save_post', 'custom_repeatable_meta_box_image_save');
+function custom_repeatable_meta_box_image_save($post_id) {
+    if ( ! isset( $_POST['gpm_repeatable_meta_box_nonce'] ) ||
+    ! wp_verify_nonce( $_POST['gpm_repeatable_meta_box_nonce'], 'gpm_repeatable_meta_box_nonce' ) )
+        return;
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        return;
+
+    if (!current_user_can('edit_post', $post_id))
+        return;
+
+    $old = get_post_meta($post_id, 'customdata_group2', true);
+    $new = array();
+    $invoiceItems = $_POST['TitleItem2'];
+    $invoiceSubitems = $_POST['SubtitleItem2'];
+    $prices = $_POST['TitleDescription2'];
+    $images = $_FILES['ChooseFile']['name'];
+
+    $count = count( $invoiceItems );
+
+     for ( $i = 0; $i < $count; $i++ ) {
+        if ( $invoiceItems[$i] != '' ) :
+            $new[$i]['TitleItem2'] = stripslashes( strip_tags( $invoiceItems[$i] ) ); // and however you want to sanitize
+              $new[$i]['SubtitleItem2'] = stripslashes( $invoiceSubitems[$i] );
+                $new[$i]['TitleDescription2'] = stripslashes( $prices[$i] );
+                  $new[$i]['ChooseFile'] = $images[$i];
+        endif;
+    }
+    if ( !empty( $new ) && $new != $old )
+        update_post_meta( $post_id, 'customdata_group', $new );
+    elseif ( empty($new) && $old )
+        delete_post_meta( $post_id, 'customdata_group', $old );
+}
+
+/*
+===========================================================
+    Media Field meta box
+===========================================================
+*/
+
+add_action( 'add_meta_boxes', 'multi_media_uploader_meta_box' );
+
+function multi_media_uploader_meta_box() {
+	add_meta_box( 'my-post-box', 'Media Field', 'multi_media_uploader_meta_box_func', 'page', 'normal', 'high' );
+}
+
+function multi_media_uploader_meta_box_func($post) {
+	$banner_img = get_post_meta($post->ID,'page_banner_img',true);
+	?>
+	<style type="text/css">
+		.multi-upload-medias ul li .delete-img { position: absolute; right: 3px; top: 2px; background: aliceblue; border-radius: 50%; cursor: pointer; font-size: 14px; line-height: 20px; color: red; }
+		.multi-upload-medias ul li { width: 120px; display: inline-block; vertical-align: middle; margin: 5px; position: relative; }
+		.multi-upload-medias ul li img { width: 100%; }
+	</style>
+
+	<table cellspacing="10" cellpadding="10">
+		<tr>
+			<td>Banner Image</td>
+			<td>
+				<?php echo multi_media_uploader_field( 'page_banner_img', $banner_img ); ?>
+			</td>
+		</tr>
+	</table>
+
+	<script type="text/javascript">
+		jQuery(function($) {
+
+			$('body').on('click', '.wc_multi_upload_image_button', function(e) {
+				e.preventDefault();
+
+				var button = $(this),
+				custom_uploader = wp.media({
+					title: 'Insert image',
+					button: { text: 'Use this image' },
+					multiple: true
+				}).on('select', function() {
+					var attech_ids = '';
+					attachments
+					var attachments = custom_uploader.state().get('selection'),
+					attachment_ids = new Array(),
+					i = 0;
+					attachments.each(function(attachment) {
+						attachment_ids[i] = attachment['id'];
+						attech_ids += ',' + attachment['id'];
+						if (attachment.attributes.type == 'image') {
+							$(button).siblings('ul').append('<li data-attechment-id="' + attachment['id'] + '"><a href="' + attachment.attributes.url + '" target="_blank"><img class="true_pre_image" src="' + attachment.attributes.url + '" /></a><i class=" dashicons dashicons-no delete-img"></i></li>');
+						} else {
+							$(button).siblings('ul').append('<li data-attechment-id="' + attachment['id'] + '"><a href="' + attachment.attributes.url + '" target="_blank"><img class="true_pre_image" src="' + attachment.attributes.icon + '" /></a><i class=" dashicons dashicons-no delete-img"></i></li>');
+						}
+
+						i++;
+					});
+
+					var ids = $(button).siblings('.attechments-ids').attr('value');
+					if (ids) {
+						var ids = ids + attech_ids;
+						$(button).siblings('.attechments-ids').attr('value', ids);
+					} else {
+						$(button).siblings('.attechments-ids').attr('value', attachment_ids);
+					}
+					$(button).siblings('.wc_multi_remove_image_button').show();
+				})
+				.open();
+			});
+
+			$('body').on('click', '.wc_multi_remove_image_button', function() {
+				$(this).hide().prev().val('').prev().addClass('button').html('Add Media');
+				$(this).parent().find('ul').empty();
+				return false;
+			});
+
+		});
+
+		jQuery(document).ready(function() {
+			jQuery(document).on('click', '.multi-upload-medias ul li i.delete-img', function() {
+				var ids = [];
+				var this_c = jQuery(this);
+				jQuery(this).parent().remove();
+				jQuery('.multi-upload-medias ul li').each(function() {
+					ids.push(jQuery(this).attr('data-attechment-id'));
+				});
+				jQuery('.multi-upload-medias').find('input[type="hidden"]').attr('value', ids);
+			});
+		})
+	</script>
+
+	<?php
+}
+
+
+function multi_media_uploader_field($name, $value = '') {
+	$image = '">Add Media';
+	$image_str = '';
+	$image_size = 'full';
+	$display = 'none';
+	$value = explode(',', $value);
+
+	if (!empty($value)) {
+		foreach ($value as $values) {
+			if ($image_attributes = wp_get_attachment_image_src($values, $image_size)) {
+				$image_str .= '<li data-attechment-id=' . $values . '><a href="' . $image_attributes[0] . '" target="_blank"><img src="' . $image_attributes[0] . '" /></a><i class="dashicons dashicons-no delete-img"></i></li>';
+			}
+		}
+
+	}
+
+	if($image_str){
+		$display = 'inline-block';
+	}
+
+	return '<div class="multi-upload-medias"><ul>' . $image_str . '</ul><a href="#" class="wc_multi_upload_image_button button' . $image . '</a><input type="hidden" class="attechments-ids ' . $name . '" name="' . $name . '" id="' . $name . '" value="' . esc_attr(implode(',', $value)) . '" /><a href="#" class="wc_multi_remove_image_button button" style="display:inline-block;display:' . $display . '">Remove media</a></div>';
+}
+
+// Save Meta Box values.
+add_action( 'save_post', 'wc_meta_box_save' );
+
+function wc_meta_box_save( $post_id ) {
+	if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if( !current_user_can( 'edit_post' ) ){
+		return;
+	}
+
+	if( isset( $_POST['page_banner_img'] ) ){
+		update_post_meta( $post_id, 'post_banner_img', $_POST['page_banner_img'] );
+	}
+}
+
+/*
+===========================================================
+    Color Picker meta box
+===========================================================
+*/
+
+
+//
+  //END
+//
+
+
+add_action( 'admin_enqueue_scripts', 'mytheme_backend_scripts');
+
+if ( ! function_exists( 'mytheme_backend_scripts' ) ){
+	function mytheme_backend_scripts($hook) {
+		wp_enqueue_media();
+		wp_enqueue_style( 'wp-color-picker');
+		wp_enqueue_script( 'wp-color-picker');
+	}
+}
+
+add_action( 'add_meta_boxes', 'mytheme_add_meta_box' );
+
+if ( ! function_exists( 'mytheme_add_meta_box' ) ){
+	function mytheme_add_meta_box(){
+		add_meta_box( 'header-page-metabox-options', esc_html__('Header Color', 'mytheme' ), 'mytheme_header_meta_box', 'page', 'normal', 'high');
+	}
+}
+
+if ( ! function_exists( 'mytheme_header_meta_box' ) ){
+	function mytheme_header_meta_box( $post ){
+		$custom = get_post_custom( $post->ID );
+		$header_color = (isset($custom["header_color"][0])) ? $custom["header_color"][0] : '';
+		wp_nonce_field( 'mytheme_header_meta_box', 'mytheme_header_meta_box_nonce' );
+		?>
+		<script>
+		jQuery(document).ready(function($){
+			$('.color_field').each(function(){
+        		$(this).wpColorPicker();
+    		});
+		});
+		</script>
+		<div class="pagebox">
+			<p><?php esc_attr_e('Choosse a color for your post header.', 'mytheme' ); ?></p>
+			<input class="color_field" type="hidden" name="header_color" value="<?php esc_attr_e($header_color); ?>"/>
+		</div>
+		<?php
+	}
+}
+
+if ( ! function_exists( 'mytheme_save_header_meta_box' ) ){
+	function mytheme_save_header_meta_box( $post_id ){
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+		if( !current_user_can( 'edit_pages' ) ) {
+			return;
+		}
+		if ( !isset( $_POST['header_color'] ) || !wp_verify_nonce( $_POST['mytheme_header_meta_box_nonce'], 'mytheme_header_meta_box' ) ) {
+			return;
+		}
+		$header_color = (isset($_POST["header_color"]) && $_POST["header_color"]!='') ? $_POST["header_color"] : '';
+		update_post_meta($post_id, "header_color", $header_color);
+	}
+}
+
+add_action( 'save_post', 'mytheme_save_header_meta_box' );
+
+/*
 ===========================================================
     Adding pages metaboxes , page templates
 ===========================================================
-*/ 
+*/
 
     add_filter( 'rwmb_meta_boxes', function ( $meta_boxes ) {
 
@@ -317,7 +767,7 @@ function my_awesome_sidebar() {
                 ),
             ),
         );
-    
+
         $meta_boxes[] = array(
             'title'      => 'First Section',
             'post_types' => 'page',
@@ -487,7 +937,7 @@ function my_awesome_sidebar() {
                     'name' => 'Button Text',
                     'type' => 'text',
                 ),
-          
+
             ),
         );
 
@@ -658,7 +1108,7 @@ function my_awesome_sidebar() {
                     'name' => 'Button Text',
                     'type' => 'text',
                 ),
-          
+
             ),
         );
 
@@ -761,7 +1211,7 @@ function my_awesome_sidebar() {
             'title'      => 'Tenth Section',
             'post_types' => 'page',
             'clone' => true,
-            
+
             'fields'     => array(
                 array(
                     'id'   => 'tenth_section_items',
@@ -802,7 +1252,7 @@ function my_awesome_sidebar() {
                     'name' => 'Button Text',
                     'type' => 'text',
                 ),
-          
+
             ),
         );
 
@@ -920,7 +1370,7 @@ function my_awesome_sidebar() {
             ),
         );
 
-        
+
         $meta_boxes[] = array(
             'title'      => 'Fourteenth Section',
             'post_types' => 'page',
